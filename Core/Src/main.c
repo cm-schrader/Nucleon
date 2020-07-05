@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +57,18 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* SPI Arrays */
+uint8_t cmd[4] = {0, 0, 0, 0};
+uint8_t data[4] = {0, 0, 0, 0};
 
+/* Redirect printf to debug console */
+int _write(int file, char *ptr, int len)
+{
+	int i = 0;
+	for (i = 0; i < len; ++i)
+		ITM_SendChar((*ptr++));
+	return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -67,7 +78,7 @@ static void MX_SPI1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  cmd[0] = 0x9f;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,6 +111,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+	  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
+	  HAL_SPI_TransmitReceive(&hspi1, cmd, data, 4, 0xff);
+	  HAL_Delay(1);
+	  printf("JedecID: %02x-%02x%02x\n", data[1], data[2], data[3]);
+	  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_SET);
+	  HAL_Delay(10000);
   }
   /* USER CODE END 3 */
 }
