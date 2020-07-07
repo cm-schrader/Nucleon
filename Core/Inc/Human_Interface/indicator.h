@@ -9,9 +9,17 @@
   */
 
 #include "stm32f4xx_hal.h"
+#include "cmsis_os.h"
 
 #ifndef INC_INDICATOR_H_
 #define INC_INDICATOR_H_
+
+TIM_HandleTypeDef piezo;
+
+typedef struct {
+	uint32_t frequency;		/* Frequency in Hz */
+	uint32_t length;		/* Length in ms */
+} tone;
 
 /* Task Function */
 void indicator_task(TIM_HandleTypeDef timerHandle, uint32_t timerChannel);		/* Main indicator task */
@@ -29,6 +37,7 @@ void silence();				/* Clears the queue and stops any currently playing notes. */
 
 
 /* Hardware Functions */
-void _piezo_config();		/* Configures the PWM on TIM3 CH3. */
+void _piezo_config(uint32_t freq);
+void _piezo_halt();
 
 #endif /* INC_INDICATOR_H_ */

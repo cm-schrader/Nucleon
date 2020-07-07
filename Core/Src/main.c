@@ -278,7 +278,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 32;
+  htim3.Init.Prescaler = 16;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 1000;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -311,7 +311,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM3_Init 2 */
-
+  piezo = htim3;
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
 
@@ -367,22 +367,6 @@ static void MX_GPIO_Init(void)
 void StartBlink(void *argument)
 {
   /* USER CODE BEGIN 5 */
-//	TIM_HandleTypeDef timer = htim3;
-//	uint32_t channel = TIM_CHANNEL_3;
-//	uint16_t period = 255;
-//	uint16_t pulse = 155;
-//
-//	HAL_TIM_PWM_Stop(&timer, channel); // stop generation of pwm
-//	TIM_OC_InitTypeDef sConfigOC;
-//	timer.Init.Period = period; // set the period duration
-//	HAL_TIM_PWM_Init(&timer); // reinititialise with new period value
-//	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-//	sConfigOC.Pulse = pulse; // set the pulse duration
-//	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-//	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-//	HAL_TIM_PWM_ConfigChannel(&timer, &sConfigOC, channel);
-//	HAL_TIM_PWM_Start(&timer, channel); // start pwm generation
-
   /* Infinite loop */
   for(;;)
   {
