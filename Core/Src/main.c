@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "Human_Interface/indicator.h"
 #include "stdio.h"
 /* USER CODE END Includes */
 
@@ -60,6 +61,13 @@ const osThreadAttr_t flashDemo_attributes = {
   .priority = (osPriority_t) osPriorityBelowNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for indicator */
+osThreadId_t indicatorHandle;
+const osThreadAttr_t indicator_attributes = {
+  .name = "indicator",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -71,6 +79,7 @@ static void MX_SPI1_Init(void);
 static void MX_TIM3_Init(void);
 void StartBlink(void *argument);
 void StartFlashDemo(void *argument);
+void StartIndicator(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -123,8 +132,6 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -152,6 +159,9 @@ int main(void)
 
   /* creation of flashDemo */
   flashDemoHandle = osThreadNew(StartFlashDemo, NULL, &flashDemo_attributes);
+
+  /* creation of indicator */
+  indicatorHandle = osThreadNew(StartIndicator, NULL, &indicator_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -411,6 +421,24 @@ void StartFlashDemo(void *argument)
 
   osThreadTerminate(NULL);
   /* USER CODE END StartFlashDemo */
+}
+
+/* USER CODE BEGIN Header_StartIndicator */
+/**
+* @brief Function implementing the indicator thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartIndicator */
+void StartIndicator(void *argument)
+{
+  /* USER CODE BEGIN StartIndicator */
+  /* Infinite loop */
+  for(;;)
+  {
+    indicator_task(htim3, TIM_CHANNEL_3);
+  }
+  /* USER CODE END StartIndicator */
 }
 
  /**
