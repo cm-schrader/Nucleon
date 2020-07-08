@@ -10,37 +10,27 @@
 
 void indicator_task(TIM_HandleTypeDef timerHandle, uint32_t timerChannel)
 {
-	_piezo_config(440);
+	HAL_TIM_PWM_Start(&timerHandle, timerChannel);
 	osDelay(250);
-	_piezo_config(880);
-	osDelay(500);
-	_piezo_halt();
+	HAL_TIM_PWM_Stop(&timerHandle, timerChannel);
 	osDelay(1500);
 }
 
-/**
- * @brief Configures the piezo buzzer.
- * @param freq: Frequency in hz.
- */
-void _piezo_config(uint32_t freq)
-{
-	uint32_t t = (uint32_t) 1000000 / freq;
-	HAL_TIM_PWM_Stop(&piezo, TIM_CHANNEL_3);
-	TIM_OC_InitTypeDef sConfigOC;
-	piezo.Init.Period = t;//1000/(freq);
-	HAL_TIM_PWM_Init(&piezo);
-	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.Pulse = piezo.Init.Period / 2;
-	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-	HAL_TIM_PWM_ConfigChannel(&piezo, &sConfigOC, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&piezo, TIM_CHANNEL_3);
-}
 
-/**
- * @brief Turns off the piezo buzzer.
- */
-void _piezo_halt()
-{
-	HAL_TIM_PWM_Stop(&piezo, TIM_CHANNEL_3);
-}
+///* Task Function */
+//void indicator_task();		/* Main indicator task */
+//
+///* API Functions */
+//void note();				/* Queues a note. */
+//void scale();				/* Queues a scale of notes. */
+//void rest();				/* Queues a period of silence. */
+//void number();				/* Queues a series of notes corresponding to a number. */
+//void boot();				/* Queues the boot up note sequence. */
+//void standby();				/* Queues the standby note sequence. */
+//void warning();				/* Queues the warning note sequence and the warning code's number. */
+//void error();				/* Queues the error note sequence and the error code's number. */
+//void silence();				/* Clears the queue and stops any currently playing notes. */
+//
+//
+///* Hardware Functions */
+//void _piezo_config();		/* Configures the PWM on TIM3 CH3. */
