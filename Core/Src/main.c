@@ -68,6 +68,11 @@ const osThreadAttr_t indicator_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 128 * 4
 };
+/* Definitions for toneQueue */
+osMessageQueueId_t toneQueueHandle;
+const osMessageQueueAttr_t toneQueue_attributes = {
+  .name = "toneQueue"
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -149,7 +154,13 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
+  /* Create the queue(s) */
+  /* creation of toneQueue */
+  toneQueueHandle = osMessageQueueNew (30, sizeof(uint32_t), &toneQueue_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
+  toneQueueId = toneQueueHandle;
+  piezo = htim3;
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
@@ -278,7 +289,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 32;
+  htim3.Init.Prescaler = 16;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 1000;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -367,26 +378,10 @@ static void MX_GPIO_Init(void)
 void StartBlink(void *argument)
 {
   /* USER CODE BEGIN 5 */
-//	TIM_HandleTypeDef timer = htim3;
-//	uint32_t channel = TIM_CHANNEL_3;
-//	uint16_t period = 255;
-//	uint16_t pulse = 155;
-//
-//	HAL_TIM_PWM_Stop(&timer, channel); // stop generation of pwm
-//	TIM_OC_InitTypeDef sConfigOC;
-//	timer.Init.Period = period; // set the period duration
-//	HAL_TIM_PWM_Init(&timer); // reinititialise with new period value
-//	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-//	sConfigOC.Pulse = pulse; // set the pulse duration
-//	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-//	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-//	HAL_TIM_PWM_ConfigChannel(&timer, &sConfigOC, channel);
-//	HAL_TIM_PWM_Start(&timer, channel); // start pwm generation
-
   /* Infinite loop */
   for(;;)
   {
-
+	  note(500, 200);
 	  HAL_GPIO_TogglePin(LED_STATUS1_GPIO_Port, LED_STATUS1_Pin);
 	  osDelay(500);
   }
