@@ -156,7 +156,7 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of toneQueue */
-  toneQueueHandle = osMessageQueueNew (30, sizeof(uint32_t), &toneQueue_attributes);
+  toneQueueHandle = osMessageQueueNew (30, sizeof(struct tone), &toneQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   toneQueueId = toneQueueHandle;
@@ -381,7 +381,8 @@ void StartBlink(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  note(500, 200);
+	  note(500, 100);
+	  note(0, 400);
 	  HAL_GPIO_TogglePin(LED_STATUS1_GPIO_Port, LED_STATUS1_Pin);
 	  osDelay(500);
   }

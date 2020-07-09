@@ -10,14 +10,11 @@
 
 void indicator_task(TIM_HandleTypeDef timerHandle, uint32_t timerChannel)
 {
-	struct tone *t;
-	uint32_t f;
-	if (osMessageQueueGet(toneQueueId, &f, NULL, osWaitForever) == osOK)
+	struct tone t;
+	if (osMessageQueueGet(toneQueueId, &t, NULL, osWaitForever) == osOK)
 	{
-//		_piezo_config(t->freq);
-//		osDelay(t->length);
-		_piezo_config(f);
-		osDelay(250);
+		_piezo_config(t.freq);
+		osDelay(t.length);
 	}
 	else
 	{
@@ -28,11 +25,10 @@ void indicator_task(TIM_HandleTypeDef timerHandle, uint32_t timerChannel)
 
 void note(uint32_t freq, uint32_t length)
 {
-//	struct tone t;
-//	t.freq = freq;
-//	t.length = length;
-//	osMessageQueuePut(toneQueueId, &t, 1, 50);
-	osMessageQueuePut(toneQueueId, &freq, 0, 100);
+	struct tone t;
+	t.freq = freq;
+	t.length = length;
+	osMessageQueuePut(toneQueueId, &t, 1, 50);
 }
 
 void _piezo_config(uint32_t freq)
