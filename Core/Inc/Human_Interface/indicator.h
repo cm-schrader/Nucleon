@@ -1,10 +1,9 @@
 /**
   ******************************************************************************
-  * @file           : indicator.c
+  * @file           : indicator.h
   * @brief          : Buzzer and Status LED management
   * @date			: July 6th, 2020
-  *
-  * 	Interfaces with the Status LED and Piezo buzzer.
+  * @author			: Chrisitan M. Schrader
   ******************************************************************************
   */
 
@@ -21,6 +20,8 @@ typedef struct tone {
 	uint32_t freq;
 	uint32_t length;
 };
+
+struct tone tonePool[30];
 
 /* Task Function */
 void indicator_task(TIM_HandleTypeDef timerHandle, uint32_t timerChannel);		/* Main indicator task */

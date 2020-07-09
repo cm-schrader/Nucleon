@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
 FREERTOS.IPParameters=Tasks01,FootprintOK,Queues01
-FREERTOS.Queues01=toneQueue,30,uint32_t,0,Dynamic,NULL,NULL
+FREERTOS.Queues01=toneQueue,30,struct tone,0,Dynamic,NULL,NULL
 FREERTOS.Tasks01=blink,24,128,StartBlink,Default,NULL,Dynamic,NULL,NULL;flashDemo,16,128,StartFlashDemo,Default,NULL,Dynamic,NULL,NULL;indicator,8,128,StartIndicator,Default,NULL,Dynamic,NULL,NULL
 File.Version=6
 KeepUserPlacement=false

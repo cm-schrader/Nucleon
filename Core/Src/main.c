@@ -25,7 +25,11 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Human_Interface/indicator.h"
-#include "stdio.h"
+
+#ifdef DEBUG
+#include "test/exec.h"
+#endif
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,7 +160,7 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of toneQueue */
-  toneQueueHandle = osMessageQueueNew (30, sizeof(uint32_t), &toneQueue_attributes);
+  toneQueueHandle = osMessageQueueNew (30, sizeof(struct tone), &toneQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   toneQueueId = toneQueueHandle;
@@ -176,6 +180,10 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+#ifdef DEBUG
+  /* Run test cases in debug mode. */
+  execute_tests();
+#endif
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
