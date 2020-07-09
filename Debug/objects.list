@@ -1,7 +1,6 @@
 "Core/Src/Human_Interface/indicator.o"
 "Core/Src/freertos.o"
 "Core/Src/main.o"
-"Core/Src/memory_pool.o"
 "Core/Src/stm32f4xx_hal_msp.o"
 "Core/Src/stm32f4xx_hal_timebase_tim.o"
 "Core/Src/stm32f4xx_it.o"

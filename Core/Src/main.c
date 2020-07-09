@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include "Human_Interface/indicator.h"
 #include "stdio.h"
+#include "stdbool.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,7 +157,7 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of toneQueue */
-  toneQueueHandle = osMessageQueueNew (30, sizeof(struct tone), &toneQueue_attributes);
+  toneQueueHandle = osMessageQueueNew (50, sizeof(tone), &toneQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   toneQueueId = toneQueueHandle;
@@ -382,9 +383,12 @@ void StartBlink(void *argument)
   for(;;)
   {
 	  note(500, 100);
-	  note(0, 400);
+	  rest(400);
+	  scale(400, 800, 30, 1000, false);
+	  scale(800, 400, 60, 1000, true);
+	  note(400, 300);
 	  HAL_GPIO_TogglePin(LED_STATUS1_GPIO_Port, LED_STATUS1_Pin);
-	  osDelay(500);
+	  osDelay(5000);
   }
 
   osThreadTerminate(NULL);
@@ -432,7 +436,7 @@ void StartIndicator(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    indicator_task(htim3, TIM_CHANNEL_3);
+    indicator_task();
   }
   /* USER CODE END StartIndicator */
 }
