@@ -19,7 +19,6 @@ OBJCOPY_BIN :=
 SUBDIRS := \
 Core/Src/Human_Interface \
 Core/Src \
-Core/Src/test \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \

@@ -13,11 +13,6 @@
 *.exp
 
 # Precompiled Headers
-# Build Directoreies
-/Test/
-/Release/
-/Debug/
-
 *.gch
 *.pch
 
