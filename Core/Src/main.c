@@ -137,7 +137,6 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -157,7 +156,7 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of toneQueue */
-  toneQueueHandle = osMessageQueueNew (50, sizeof(tone), &toneQueue_attributes);
+  toneQueueHandle = osMessageQueueNew (100, sizeof(tone), &toneQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   toneQueueId = toneQueueHandle;
@@ -177,6 +176,9 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+
+  /* Boot finished, Kernel ready to start. */
+  boot_tone();
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -382,13 +384,14 @@ void StartBlink(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  note(500, 100);
-	  rest(400);
-	  scale(400, 800, 30, 1000, false);
-	  scale(800, 400, 60, 1000, true);
-	  note(400, 300);
+	  rest(2000);
+	  number_tone(4200);
+	  rest(2000);
+	  standby_tone();
 	  HAL_GPIO_TogglePin(LED_STATUS1_GPIO_Port, LED_STATUS1_Pin);
-	  osDelay(5000);
+	  rest(2000);
+	  standby_tone();
+	  osDelay(8000);
   }
 
   osThreadTerminate(NULL);

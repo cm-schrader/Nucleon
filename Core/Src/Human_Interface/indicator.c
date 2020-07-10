@@ -25,6 +25,12 @@ void indicator_task()
 	}
 }
 
+/*
+ * ================================================================================
+ * 									API Functions
+ * ================================================================================
+ */
+
 /**
  * @brief Queues a note.
  * @param freq		:Frequency of note to play in hz.
@@ -69,28 +75,142 @@ osStatus_t rest(uint32_t length)
  */
 bool scale(uint32_t freqStart, uint32_t freqEnd, uint32_t notes, uint32_t length, bool force)
 {
-	int32_t nstep = abs(freqEnd - freqStart) / notes;
-	uint32_t tstep = length / notes;
-
 	/* If there isn't enough space and force is false, return a failure. */
-	if (osMessageQueueGetCapacity(toneQueueId) - osMessageQueueGetCount(toneQueueId) < notes && !force)
+	if (osMessageQueueGetCapacity(toneQueueId) - osMessageQueueGetCount(toneQueueId) <= notes && !force)
 	{
 		return false;
 	}
+
+	int32_t nstep = abs(freqEnd - freqStart) / notes;
+	uint32_t tstep = length / notes;
 
 	/* Queue scale */
 	int high = (freqStart > freqEnd) ? freqStart : freqEnd;
 	int low = (freqStart < freqEnd) ? freqStart : freqEnd;
 	for(int f = low; f < high; f += nstep)
 	{
-		if (note((freqStart < freqEnd) ? f :high - (f - low), tstep) != osOK)
+		if (note((freqStart < freqEnd) ? f :high - f + low, tstep) != osOK)
 		{
 			/* If a note fails to queue and force is false, return a failure. */
 			if (!force) return false;
 		}
 	}
-
+	return true;
 }
+
+/**
+ * @brief Plays a series of notes representing a number.
+ * @param number	:Number to indicate.
+ * @retval			:The success of the operation.
+ *
+ * @note	In order to queue the notes, there needs to be enough space in the
+ * 			indicator queue.
+ *
+ * @note 	A high beep denotes the start of a number.  A medium note indicates
+ * 			the start of a digit.  Each subsequent low note is added together
+ * 			to give you the number.  If no low notes follow a medium note, that
+ * 			indicates a zero.
+ *
+ * 			Example: H M L L M L L L M M -> 2300
+ */
+bool number_tone(uint32_t number)
+{
+	uint32_t digit;
+	uint32_t size = 0;
+	uint32_t j;
+	uint32_t i = 0;
+	uint32_t notes = 1;
+
+	/* Reverse digits */
+	while (number != 0)
+	{
+		i *= 10;
+		i += number%10;
+		number /= 10;
+		++size;
+	}
+	number = i;
+
+	/* If there isn't enough space and force is false, return a failure. */
+	for(j = 0; j < size; ++j)
+	{
+		notes += (i % 10) * 2 + 2;
+		i /= 10;
+	}
+	if (osMessageQueueGetCapacity(toneQueueId) - osMessageQueueGetCount(toneQueueId) <= notes)
+	{
+		return false;
+	}
+
+	/* Queue Notes */
+	if (note(HIGH_NOTE, NLONG) != osOK) return false;
+	for(j = 0; j < size; ++j)
+	{
+		/* Next Digit */
+		digit = number % 10;
+		number /= 10;
+		note(MED_NOTE, NMED);
+		for (i = 0; i < digit; ++i)
+		{
+			if (note(LOW_NOTE, NSHORT) != osOK) return false;
+			if (rest(NSHORT) != osOK) return false;
+		}
+		if (digit == 0)
+		{
+			if (rest(NMED) != osOK) return false;
+		}
+		else
+		{
+			if (rest(NSHORT) != osOK) return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * @brief Plays a series of notes indicating a successful bootup.
+ * @retval			:The success of the operation.
+ */
+bool boot_tone()
+{
+	if (note(LOW_NOTE, 400) != osOK) return false;
+	if (rest(NBREAK) != osOK) return false;
+	if (note(MED_NOTE, 100) != osOK) return false;
+	if (rest(NBREAK) != osOK) return false;
+	if (note(HIGH_NOTE, 300) != osOK) return false;
+	if (rest(NMED) != osOK) return false;
+	return true;
+}
+
+/**
+ * @brief Plays a series of notes indicating standby.
+ * @retval			:The success of the operation.
+ */
+bool standby_tone()
+{
+	if (note(LOW_NOTE, 200) != osOK) return false;
+	if (rest(NBREAK) != osOK) return false;
+	if (note(HIGH_NOTE, 100) != osOK) return false;
+	if (rest(NMED) != osOK) return false;
+	return true;
+}
+
+/**
+ * @brief Silences the peizo.
+ *
+ * 	Dumps the tone queue and stops PWM.
+ */
+void silence()
+{
+	osMessageQueueReset	(toneQueueId);
+	_piezo_halt();
+}
+
+/*
+ * ================================================================================
+ * 									Private Functions
+ * ================================================================================
+ */
 
 /**
  * @brief Configures the piezo PWM signal.

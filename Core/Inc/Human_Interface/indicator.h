@@ -24,6 +24,16 @@ typedef struct tone {
 	uint32_t length;
 } tone;
 
+/* Note Constants */
+static const uint32_t NBREAK = 50;
+static const uint32_t NSHORT = 250;
+static const uint32_t NMED = 500;
+static const uint32_t NLONG = 750;
+
+static const uint32_t HIGH_NOTE = 700;
+static const uint32_t MED_NOTE = 500;
+static const uint32_t LOW_NOTE = 300;
+
 /* Task Function */
 void indicator_task();
 
@@ -31,15 +41,15 @@ void indicator_task();
 osStatus_t note(uint32_t freq, uint32_t length);
 osStatus_t rest(uint32_t length);
 bool scale(uint32_t freqStart, uint32_t freqEnd, uint32_t notes, uint32_t length, bool force);
-void number();				/* Queues a series of notes corresponding to a number. */
-void boot();				/* Queues the boot up note sequence. */
-void standby();				/* Queues the standby note sequence. */
-void warning();				/* Queues the warning note sequence and the warning code's number. */
-void error();				/* Queues the error note sequence and the error code's number. */
-void silence();				/* Clears the queue and stops any currently playing notes. */
+bool number_tone(uint32_t number);
+bool boot_tone();
+bool standby_tone();
+//void warning_tone();				/* Queues the warning note sequence and the warning code's number. */
+//void error_tone();				/* Queues the error note sequence and the error code's number. */
+void silence();
 
 
-/* Hardware Functions */
+/* Private Functions */
 void _piezo_config();		/* Configures the PWM on TIM3 CH3. */
 void _piezo_halt();
 
