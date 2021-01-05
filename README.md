@@ -2,7 +2,7 @@
 Nucleon is rocket flight computer firmware designed for the Carbon altimeter.  It is built using HAL, CMSIS, and FreeRTOS to run on an STM32F405.  This firmware is primarily intended for high power and model rocketry.  The firmware interfaces with a barometer and accelerometer to log flight data, detect events such as launch and apogee, and upload that data to a computer.
 
 ## Safe Use
-Nucleon is early on in development and thus is **not flight ready**.  Under no circumstance should Nucleon have any control over rocket deployment.  As development progresses, Nucleon will eventually progress to redundant flight ready (ready for flight with a redundant comercial flight computer) and finally to fully flight ready.
+Nucleon is early on in development and thus is **not flight ready**.  
 **Always** fly rockets in accordance with either the [NAR High Rocket Power Safety Code](https://www.nar.org/safety-information/high-power-rocket-safety-code/) or your organizations equivilant.
 
 ## Author
